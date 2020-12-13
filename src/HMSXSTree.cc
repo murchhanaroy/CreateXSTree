@@ -45,6 +45,7 @@ void HMSXSTree::BeginOfRun()
     
   mTree->Branch("xtg0",&xtg0,"xtg0/F");
   mTree->Branch("ytg0",&ytg0,"ytg0/F");
+  mTree->Branch("ztg0",&ztg0,"ztg0/F");
   mTree->Branch("xptg0",&xptg0,"xptg0/F");
   mTree->Branch("yptg0",&yptg0,"yptg0/F");
   mTree->Branch("delta0",&delta0,"delta0/F");
@@ -73,6 +74,7 @@ void HMSXSTree::BeginOfRun()
     
   mTree->Branch("xtg",&xtg,"xtg/F");
   mTree->Branch("ytg",&ytg,"ytg/F");
+  mTree->Branch("ztg",&ztg,"ztg/F");
   mTree->Branch("xptg",&xptg,"xptg/F");
   mTree->Branch("yptg",&yptg,"yptg/F");
   mTree->Branch("delta",&delta,"delta/F");
@@ -94,6 +96,9 @@ void HMSXSTree::BeginOfRun()
       mTree->Branch("xs_14n",&xs_14n,"xs_14n/F");
       mTree->Branch("xs_27al",&xs_27al,"xs_27al/F");
       mTree->Branch("xs_ge180",&xs_ge180,"xs_ge180/F");
+      mTree->Branch("p_rate_he3",&p_rate_he3,"p_rate_he3/F");
+      mTree->Branch("p_rate_ge180",&p_rate_ge180,"p_rate_ge180/F");
+      mTree->Branch("p_rate_c12",&p_rate_he3,"p_rate_c12/F");
     }
   //the above will not be filled if mTreeLevel>=2 /////////////////////
 
@@ -153,6 +158,7 @@ void HMSXSTree::Run(int nevents_to_process)
     //ini
     xtg0 = psxtari;
     ytg0 = psytari;
+    ztg0 = psztari;
     xptg0 = psxptari;
     yptg0 = psyptari;
     delta0 = psdeltai;
@@ -182,6 +188,7 @@ void HMSXSTree::Run(int nevents_to_process)
     //recon
     xtg = 0; //not available from original tree
     ytg = psytar;
+    ztg = psztar;
     xptg = psxptar;
     yptg = psyptar;
     delta = psdelta;
@@ -229,6 +236,21 @@ void HMSXSTree::Run(int nevents_to_process)
       xs_14n = GetXS(7,7,mBeam,p0,theta0,0.0,0.0);
       xs_27al = GetXS(13,14,mBeam,p0,theta0,0.0,0.0);
       xs_ge180 = GetXS_GE180(mBeam,p0,theta0,0.0,0.0);
+      //rate
+      p_accept = (15.0+abs(-15.0))/100.0; 
+      th_accept = (70.0+abs(-70.0))/1000.0;
+      ph_accept = (100.0+abs(-100.0))/1000.0;
+      n_trials=1000000.0;
+      tar_len_ge180=0.015;
+      tar_len_he3=40.0;
+      tar_len_c12=0.0254;
+      p_spec=mDetMom;
+      dens_ge180=2.02e28;
+      dens_he3=12.0*2.686e25;
+      dens_c12=1.6532e28;
+      p_rate_he3=GetXS(2,1,mBeam,p0,theta0,0.0,0.0)*p_spec*p_accept*th_accept*ph_accept*dens_he3*1e-37*30e-6*tar_len_he3/100.0/(1.6*1e-19*n_trials);
+      p_rate_ge180=GetXS_GE180(mBeam,p0,theta0,0.0,0.0)*p_spec*p_accept*th_accept*ph_accept*dens_ge180*1e-37*30e-6*tar_len_ge180/100.0/(1.6*1e-19*n_trials);
+      p_rate_c12=GetXS(6,6,mBeam,p0,theta0,0.0,0.0)*p_spec*p_accept*th_accept*ph_accept*dens_c12*1e-37*30e-6*tar_len_c12/100.0/(1.6*1e-19*n_trials);
     }
         
     //fill the tree
@@ -258,7 +280,7 @@ void HMSXSTree::Reset()
 {
   //ini
   vx0=vy0=vz0=p0=theta0=phi0=-9999.0;
-  xtg0=ytg0=xptg0=yptg0=delta0=-9999.0;
+  xtg0=ytg0=ztg0=xptg0=yptg0=delta0=-9999.0;
 
   //intermedia
   ixs=iys=-9999; 
@@ -268,13 +290,13 @@ void HMSXSTree::Reset()
 
   //recon
   vx=vy=vz=p=theta=phi=-9999.0;
-  xtg=ytg=xptg=yptg=delta=-9999.0;
+  xtg=ytg=ztg=xptg=yptg=delta=-9999.0;
 
   //kin
   nu=Q2=W=xbj=-9999.0;
 
   //this block will not be filled if mTreeLevel>=2
-  xs_1h=xs_3he=xs_4he=xs_12c=xs_14n=xs_27al=xs_ge180=-9999.0; 
+  xs_1h=xs_3he=xs_4he=xs_12c=xs_14n=xs_27al=xs_ge180=p_rate_he3=p_rate_ge180=p_rate_c12=-9999.0; 
   
 }
 
