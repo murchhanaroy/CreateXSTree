@@ -71,7 +71,7 @@ private:
     //-----------------------------block3 start  -----------------------
     //ini
     float vx0,vy0,vz0,p0,theta0,phi0;
-    float xtg0,ytg0,xptg0,yptg0,delta0;
+    float xtg0,ytg0,ztg0,xptg0,yptg0,delta0;
 
     //intermedia
     int    ixs,iys;  //sieve hole index
@@ -81,10 +81,12 @@ private:
 
     //recon
     float  vx,vy,vz,p,theta,phi;
-    float  xtg,ytg,xptg,yptg,delta;
+    float  xtg,ytg,ztg,xptg,yptg,delta;
 
     //kin
     float  nu,Q2,W,xbj;
+    //rate
+    float p_rate_he3, p_rate_ge180,p_rate_c12, p_spec, p_accept, th_accept, ph_accept, dens_he3, dens_ge180,dens_c12, tar_len_ge180, tar_len_he3,tar_len_c12, n_trials;
 
     //-----------------------------block3 end  -------------------------
 
